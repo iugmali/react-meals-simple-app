@@ -4,7 +4,8 @@ const CartContext = React.createContext({
   cartItems: [],
   totalAmount: 0,
   onAddItem: (item) => {},
-  onRemoveItem: (id) => {}
+  onRemoveItem: (id) => {},
+  clearCart: () => {}
 })
 
 const defaultCartState = {
@@ -49,6 +50,9 @@ const cartReducer = (state, action) => {
     localStorage.setItem('react_meals_cart', JSON.stringify(cartState))
     return cartState
   }
+  if (action.type === 'CLEAR') {
+    return defaultCartState
+  }
   if (action.type === 'RETRIEVE') {
     return action.cartState
   }
@@ -70,12 +74,17 @@ export const CartContextProvider = ({children}) => {
     dispatchCartAction({type: 'REMOVE', id: id})
   }
 
+  const clearCartHandler = () => {
+    dispatchCartAction({type: 'CLEAR'})
+  }
+
   return (
     <CartContext.Provider value={{
       cartItems: cartState.cartItems,
       totalAmount: cartState.totalAmount,
       onAddItem: addItemToCartHandler,
-      onRemoveItem: removeItemFromCartHandler
+      onRemoveItem: removeItemFromCartHandler,
+      clearCart: clearCartHandler
     }}>
       {children}
     </CartContext.Provider>
